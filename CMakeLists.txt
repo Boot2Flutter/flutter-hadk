@@ -22,26 +22,28 @@ set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
 # now build app's shared lib
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DANDROID_STL=c++_static -std=c++14 -Wall -Werror")
 
+if (NOT CMAKE_BUILD_TYPE)
+   set (CMAKE_BUILD_TYPE "RelWithDebInfo")
+   message (
+      STATUS "No CMAKE_BUILD_TYPE selected, defaulting to ${CMAKE_BUILD_TYPE}"
+   )
+endif ()
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+
 add_executable(
     flutter-hadk
     src/main.cpp
+    src/flutter_hadk.cpp
+    src/hadk/binding/binding.cpp
     )
 
 ###########################################################################
 
-#import flutter embedder
-# include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-# add_library(flutter_embedder SHARED IMPORTED)
-# set_target_properties(flutter_embedder
-#         PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/${ANDROID_ABI}/libflutter_embedder.so)
-
-###########################################################################
-
-
 # add lib dependencies
-# target_link_libraries(flutter-hadk
-#     android
-#     flutter_embedder
-#     EGL
-#     GLESv1_CM
-#     log)
+target_link_libraries(flutter-hadk
+    android
+    EGL
+    GLESv2
+    log)
